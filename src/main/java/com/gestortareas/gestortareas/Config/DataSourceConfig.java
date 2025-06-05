@@ -15,7 +15,7 @@ public class DataSourceConfig implements CommandLineRunner {
     }
 
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
         Tarea tarea = Tarea.builder()
                 .titulo("Prueba desde CommandLineRunner")
                 .descripcion("Descripción prueba")
