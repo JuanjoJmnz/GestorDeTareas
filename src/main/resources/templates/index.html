@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Tareas</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" th:href="@{/style.css}">
+</head>
+<body class="container mt-5">
+
+<h1 class="mb-4">Mis Tareas</h1>
+
+<form th:action="@{/tareas}" th:object="${tarea}" method="post" class="mb-4">
+    <div class="row g-2">
+        <div class="col-md-4">
+            <input type="text" th:field="*{titulo}" class="form-control" placeholder="Título" required>
+        </div>
+        <div class="col-md-6">
+            <input type="text" th:field="*{descripcion}" class="form-control" placeholder="Descripción">
+        </div>
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-success w-100">Agregar</button>
+        </div>
+    </div>
+</form>
+
+<div class="mb-3">
+    <button onclick="actualizarListaConAnimacion()" class="btn btn-primary">
+        <i class="fas fa-sync" id="iconoActualizar"></i> Actualizar Lista
+    </button>
+</div>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Título</th>
+        <th>Descripción</th>
+        <th>Estado</th>
+        <th>Fecha</th>
+        <th>Acciones</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="tarea : ${tareas}">
+        <td th:text="${tarea.id}"></td>
+        <td th:text="${tarea.titulo}"></td>
+        <td th:text="${tarea.descripcion}"></td>
+        <td th:text="${tarea.completada ? 'Completada' : 'Pendiente'}"></td>
+        <td th:text="${#temporals.format(tarea.fechaCreacion, 'dd/MM/yyyy')}"></td>
+        <td>
+            <div class="btn-group gap-2" role="group">
+                <button th:if="${!tarea.completada}"
+                        th:data-id="${tarea.id}"
+                        onclick="completarTarea(this.getAttribute('data-id'))"
+                        class="btn btn-success btn-sm">Completar</button>
+                <button th:data-id="${tarea.id}"
+                        th:data-titulo="${#uris.escapePathSegment(tarea.titulo)}"
+                        th:data-descripcion="${#uris.escapePathSegment(tarea.descripcion)}"
+                        onclick="editarTarea(this.getAttribute('data-id'), this.getAttribute('data-titulo'), this.getAttribute('data-descripcion'))"
+                        class="btn btn-primary btn-sm">Editar</button>
+                <form th:action="@{/tareas/{id}/eliminar(id=${tarea.id})}" method="post" class="d-inline">
+                    <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+                </form>
+            </div>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<script th:src="@{/tareas.js}"></script>
+
+
+<footer>
+    Creado y desarrollado por Juan José Jiménez Gil.    ©2025
+    <br>
+    <a href="https://github.com/JuanjoJmnz/GestorTareas">GitHub</a>
+</footer>
+</body>
+</html>
